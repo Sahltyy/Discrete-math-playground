@@ -878,6 +878,36 @@ textarea.txt { font: 500 16px/1.55 var(--f-body); }
 .conf.c-star { width: 16px; height: 16px; border: 0; clip-path: polygon(50% 0, 61% 35%, 98% 35%, 68% 57%, 79% 91%, 50% 70%, 21% 91%, 32% 57%, 2% 35%, 39% 35%); }
 @keyframes confetti { 0% { transform: translate(-50%, -50%) scale(.3) rotate(0); opacity: 1; } 75% { opacity: 1; } 100% { transform: translate(calc(-50% + var(--dx)), calc(-50% + var(--dy))) scale(1) rotate(var(--rot)); opacity: 0; } }
 @media (prefers-reduced-motion: reduce) { .today .mascot { animation: none; } }
+
+/* ===== 4.7–4.8: recipe cards, Quiz 3 countdown, first-line lab ===== */
+.recipes { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 12px; margin: 4px 0; }
+.rcp { display: grid; gap: 4px; justify-items: center; text-align: center; padding: 14px 14px 16px; background: var(--card); border: 2.5px solid var(--outline); border-radius: 18px; box-shadow: 3px 3px 0 var(--outline); font-size: 15px; line-height: 1.4; }
+.rcp.ctr { background: var(--hl-soft); }
+.rcp.cp { background: var(--pen-soft); }
+.rcp b { font: 800 18px var(--f-body); }
+.rcp-ic { font-size: 26px; line-height: 1; }
+.rcp-ar { color: var(--muted); font-weight: 800; line-height: 1; }
+
+.q3card { margin: 4px 0 26px; padding: 18px; background: var(--butter-soft); border: 2.5px solid var(--outline); border-radius: 22px; box-shadow: var(--shadow); display: grid; gap: 14px; }
+.q3top { display: grid; grid-template-columns: auto minmax(0, 1fr); gap: 14px; align-items: start; }
+.q3days { display: grid; place-items: center; width: 64px; height: 64px; border-radius: 50%; background: var(--hl); color: var(--on-hl); border: 2.5px solid var(--outline); box-shadow: 2px 2px 0 var(--outline); line-height: 1; }
+.q3days b { font: 400 28px var(--f-display); }
+.q3days small { font: 800 11px var(--f-body); text-transform: uppercase; letter-spacing: .04em; margin-top: -10px; }
+.q3card h2 { margin: 2px 0 4px; font: 800 22px var(--f-body); color: var(--ink); text-shadow: none; }
+.q3card p { margin: 0; color: var(--ink); line-height: 1.45; }
+.q3plan { display: flex; flex-wrap: wrap; gap: 6px; }
+.q3plan span { padding: 4px 10px; border-radius: 999px; background: var(--card); border: 2px solid var(--line); font: 700 13px var(--f-body); color: var(--muted); }
+.q3plan span.now { border-color: var(--outline); color: var(--ink); background: var(--card); box-shadow: 2px 2px 0 var(--outline); }
+.q3card .row { flex-wrap: wrap; }
+@media (max-width: 520px) { .q3days { width: 54px; height: 54px; } .q3days b { font-size: 24px; } .q3card h2 { font-size: 20px; } }
+
+.fl-pick { display: grid; gap: 4px; min-width: 0; }
+.fl-pick select { font: 700 15px var(--f-body); color: var(--ink); padding: 10px 12px; border: 2.5px solid var(--outline); border-radius: 14px; background: var(--card); width: 100%; min-width: 0; text-overflow: ellipsis; }
+.ans > .stack, .fill { min-width: 0; }
+.fill select.blank { max-width: 100%; text-overflow: ellipsis; }
+.fl-s { font: 800 clamp(19px, 4.6vw, 23px)/1.35 var(--f-body); }
+.fl-best { margin: 4px 0 0; line-height: 1.5; }
+#fl-c { margin-top: 6px; font-weight: 700; }
 </style>
 <header class="top"><div class="top-in">
   <button type="button" class="brand" id="brand" aria-label="Discrete Lab home">
@@ -2454,6 +2484,219 @@ function labInd(body) {
   draw();
 }
 
+/* ======================= 4.7–4.8 INDIRECT PROOF (Quiz 3) ======================= */
+const RECIPES_FIG = '<div class="recipes">' +
+  '<div class="rcp ctr"><span class="rcp-ic" aria-hidden="true">💥</span><b>Contradiction</b><span>Suppose the statement is <b>false</b>.</span><span class="rcp-ar" aria-hidden="true">↓</span><span>Do algebra until something <b>impossible</b> happens.</span><span class="rcp-ar" aria-hidden="true">↓</span><span>So the statement is true.</span></div>' +
+  '<div class="rcp cp"><span class="rcp-ic" aria-hidden="true">🔁</span><b>Contraposition</b><span>To prove <b>if P, then Q</b>…</span><span class="rcp-ar" aria-hidden="true">↓</span><span>…prove <b>if not Q, then not P</b> directly.</span><span class="rcp-ar" aria-hidden="true">↓</span><span>Same meaning, so the original is true.</span></div></div>';
+
+Object.assign(PROOFS, {
+  ctrProd: { thm: 'The product of any nonzero rational number and any irrational number is irrational.', lines: [
+    'Proof (by contradiction): Suppose not. That is, suppose there are a nonzero rational number r and an irrational number s such that rs is rational.',
+    'By definition of rational, r = a/b and rs = c/d for some integers a, b, c, d with b ≠ 0 and d ≠ 0. Also a ≠ 0, because r ≠ 0.',
+    'Then s = (rs) ÷ r = (c/d) ÷ (a/b) = (c/d) · (b/a) = bc/(ad).',
+    'bc and ad are integers because products of integers are integers, and ad ≠ 0 because a ≠ 0 and d ≠ 0.',
+    'So s is rational by definition of rational. This contradicts the supposition that s is irrational.',
+    'Hence the supposition is false, and the product of any nonzero rational number and any irrational number is irrational.', QED],
+    bad: [['Suppose r is a nonzero rational number, s is irrational, and rs is irrational.', 'That assumes the conclusion. Suppose the opposite: rs is rational.'],
+      ['Let r = 2 and s = √2. Then rs = 2√2, which is irrational.', 'One example never proves a “for all” statement.'],
+      ['Then s = (rs) ÷ r = (c/d) · (a/b) = ac/(bd).', 'Dividing by a/b means multiplying by b/a, not by a/b.']] },
+  cp5n3: { thm: 'For every integer n, if 5n + 3 is even, then n is odd.', lines: [
+    'Proof (by contraposition): The contrapositive is: for every integer n, if n is even, then 5n + 3 is odd.',
+    'Suppose n is any particular but arbitrarily chosen even integer.',
+    'By definition of even, n = 2k for some integer k.',
+    'Then 5n + 3 = 5(2k) + 3 = 10k + 3 = 10k + 2 + 1 = 2(5k + 1) + 1.',
+    'Let t = 5k + 1. Then t is an integer because products and sums of integers are integers.',
+    'So 5n + 3 = 2t + 1, which is odd by definition of odd.',
+    'Hence the contrapositive is true, and since a statement is logically equivalent to its contrapositive, the original statement is true.', QED],
+    bad: [['The contrapositive is: for every integer n, if n is odd, then 5n + 3 is even.', 'That is the converse. The contrapositive negates BOTH parts and swaps them.'],
+      ['Suppose n is any particular but arbitrarily chosen odd integer.', 'The contrapositive starts from “not Q”. Q is “n is odd”, so start from “n is even”.'],
+      ['By definition of even, n = 2k and 5n + 3 = 2k.', 'Each new number gets its own letter.']] },
+  ctrN2: { thm: 'For every integer n, n² − 2 is not divisible by 4.', lines: [
+    'Proof (by contradiction): Suppose not. That is, suppose there is an integer n such that n² − 2 is divisible by 4.',
+    'Then n² − 2 = 4k for some integer k, so n² = 4k + 2 = 2(2k + 1).',
+    'So n² is even, and therefore n is even (from 4.7: if n² is even, then n is even).',
+    'So n = 2m for some integer m. Substitute: (2m)² = 4k + 2, so 4m² = 4k + 2.',
+    'Then 4m² − 4k = 2, so 2(m² − k) = 1, and m² − k = 1/2.',
+    'But m² − k is an integer and 1/2 is not. This is a contradiction.',
+    'Hence the supposition is false, and n² − 2 is not divisible by 4 for every integer n.', QED],
+    bad: [['Suppose n² − 2 is not divisible by 4.', 'That is the statement itself. Suppose the opposite: it IS divisible by 4.'],
+      ['Try n = 1, 2, 3: n² − 2 is −1, 2, 7. None is divisible by 4, so the statement is true.', 'Examples never prove “for every n.”'],
+      ['Then n² = 4k + 2, so n = √(4k + 2).', 'Square roots are a dead end. Use “n² is even, so n is even” instead.']] }
+});
+
+STATIONS.push({
+  id: 'indir', num: '4.7–4.8', name: 'Indirect Proof: Contradiction & Contraposition', short: 'Indirect proof', lab: 'indir',
+  blurb: 'Quiz 3. Two recipes: suppose it’s false and hit something impossible, or flip the if-then. Plus the 4.8 results you need to know (no need to reproduce those proofs).',
+  keys: ['Contradiction: “Suppose not.” Write the exact negation, do algebra until something impossible happens, say what it contradicts, then “Hence the supposition is false.”',
+    'The negation of “∀x, if P(x) then Q(x)” is “∃x such that P(x) and not Q(x).” It is NOT another if-then.',
+    'Contraposition: to prove “if P then Q”, prove “if not Q, then not P” with a direct proof.',
+    'A statement and its contrapositive mean the same thing. The converse (if Q then P) does not.',
+    'Classic contradictions: an integer equals 1/2, a number is both even and odd, N + 1 > N when N was the greatest, √2 = integer/integer.',
+    'Rational: r = a/b for integers a and b with b ≠ 0. Irrational: a real number that is not rational.',
+    'Rational + irrational = irrational. Nonzero rational × irrational = irrational. Irrational + irrational can be rational: √2 + (−√2) = 0.',
+    'You may USE: √2 is irrational. If a prime p divides a, then p does not divide a + 1. There are infinitely many primes.',
+    'Pick contradiction for “there is no …”, “… is irrational”, “… is not divisible by …”. Pick contraposition when “not Q” is easy to write (n is odd → n = 2k + 1).'],
+  cards: [
+    { t: 'Two ways in through the back door', b: '<p>A <b>direct</b> proof walks from P straight to Q. Sometimes that road is blocked.</p><p>An <b>indirect</b> proof goes around. Quiz 3 is about the two ways around:</p>', fig: { html: RECIPES_FIG },
+      think: 'Both recipes start with “Suppose…”. The skill being tested is writing the right first line.',
+      q: { q: 'Quiz 3 covers which two methods?', o: ['Proof by contradiction and proof by contraposition', 'Induction and counterexamples', 'Truth tables and Venn diagrams', 'Direct proof and proof by cases'], w: 'Sections 4.7 and 4.8 are both “indirect argument.”' } },
+    { t: 'Recipe 1: proof by contradiction', b: '<p><b>1.</b> Suppose the statement is <b>false</b>. Write “Suppose not,” then its exact negation.</p><p><b>2.</b> Work forward with definitions and algebra until you reach something <b>impossible</b>, a contradiction.</p><p><b>3.</b> Conclude: “Hence the supposition is false, and the statement is true.”</p>',
+      ex: '<b>Theorem:</b> There is no greatest integer.<br><br>Suppose not. Suppose there is a greatest integer N. Then N ≥ n for every integer n.<br>Let M = N + 1. M is an integer because a sum of integers is an integer.<br>M = N + 1 > N, so M is an integer bigger than N.<br>That contradicts “N ≥ every integer.”<br>Hence the supposition is false, and there is no greatest integer. Q.E.D.',
+      think: 'A contradiction is anything that can’t be true: N + 1 ≤ N, “1/2 is an integer,” “n is even and odd,” “√2 is rational.”',
+      q: { q: 'The first words of a proof by contradiction are usually:', o: ['“Suppose not.”', '“Let n = 1.”', '“Assume the statement is true.”', '“By definition of even.”'], w: '“Suppose not” = suppose the statement is false.' } },
+    { t: 'The #1 skill: write the negation', b: '<p>Your “Suppose not” line must be the <b>exact negation</b>. Most lost points are here.</p><p><b>“There is no X”</b> → Suppose there IS an X.<br><b>“x is irrational”</b> → Suppose x is rational.<br><b>“∀x, if P(x) then Q(x)”</b> → Suppose ∃x such that P(x) <b>and not</b> Q(x).<br><b>“Every A is B”</b> → Suppose some A is not B.<br><b>“m is even or n is even”</b> → m is odd <b>and</b> n is odd (De Morgan).</p>',
+      ex: '“For every integer n, if n² is even, then n is even.”<br>Negation: “There is an integer n such that n² is even <b>and</b> n is odd.”',
+      trap: 'The negation of an if-then is NOT another if-then. Keep P, negate Q, join them with “and.”',
+      q: { q: 'Negate: “For every integer n, if 3n is odd, then n is odd.”', o: ['There is an integer n such that 3n is odd and n is even.', 'For every integer n, if 3n is even, then n is even.', 'There is an integer n such that if 3n is odd, then n is even.', 'There is an integer n such that 3n is even and n is odd.'], w: '∀ flips to ∃. Keep “3n is odd,” negate “n is odd,” and join with “and.”' } },
+    { t: 'Example: no integer is both even and odd', b: '<p>This one gives you the most-used contradiction on the quiz: <b>an integer can’t equal 1/2</b>.</p>',
+      ex: '<b>Theorem:</b> There is no integer that is both even and odd.<br><br>Suppose not. Suppose there is an integer n that is even and odd.<br>Even: n = 2a for some integer a.<br>Odd: n = 2b + 1 for some integer b.<br>So 2a = 2b + 1<br>2a − 2b = 1<br>2(a − b) = 1<br>a − b = 1/2<br>But a − b is an integer (a difference of integers), and 1/2 is not an integer. Contradiction.<br>Hence the supposition is false, and no integer is both even and odd. Q.E.D.',
+      think: 'Whenever you reach “2(something) = 1”, divide by 2 and point out “integer = 1/2.”',
+      q: { q: '2(a − b) = 1, with a and b integers. What’s the contradiction?', o: ['a − b = 1/2, but a − b is an integer', 'a − b = 2', 'a and b must be equal', 'There isn’t one'], w: 'Divide both sides by 2: a − b = 1/2. An integer can’t be 1/2.' } },
+    { t: 'Rational vs irrational', b: '<p><b>Rational:</b> r can be written as <m>a/b</m> where a and b are <b>integers</b> and <b>b ≠ 0</b>. Like 3/4, −2 = −2/1, 0.5 = 1/2.</p><p><b>Irrational:</b> a real number that is <b>not</b> rational. Like √2 and π.</p><p>“Irrational” is a NOT statement. To prove something is irrational, suppose it IS rational, write it as a/b, and break something.</p>',
+      trap: 'Always write “for some integers a and b with b ≠ 0.” Leaving out “integers” or “b ≠ 0” costs points.',
+      q: { q: 'To prove x is irrational by contradiction, the first line is:', o: ['Suppose not. Suppose x is rational, so x = a/b for some integers a and b with b ≠ 0.', 'Suppose x is irrational.', 'Suppose x = a/b for some real numbers a and b.', 'Suppose x = √2.'], w: 'Negate “irrational”: suppose it IS rational, with integers a, b and b ≠ 0.' } },
+    { t: 'Example: rational + irrational = irrational', b: '<p><b>Theorem:</b> The sum of any rational number and any irrational number is irrational.</p>',
+      ex: 'Suppose not. Suppose there are a rational number r and an irrational number s such that r + s is rational.<br>By definition of rational:<br>r = a/b and r + s = c/d for some integers a, b, c, d with b ≠ 0, d ≠ 0.<br>Solve for s:<br>s = (r + s) − r<br>= c/d − a/b<br>= bc/(bd) − ad/(bd)<br>= (bc − ad)/(bd)<br>bc − ad and bd are integers, and bd ≠ 0 because b ≠ 0 and d ≠ 0.<br>So s is rational. That contradicts s being irrational.<br>Hence the supposition is false, and r + s is irrational. Q.E.D.',
+      think: 'Move: solve for the thing that was supposed to be irrational. If it comes out as integer/nonzero integer, you have your contradiction.',
+      q: { q: 'c/d − a/b = ?', o: ['(bc − ad)/(bd)', '(c − a)/(d − b)', '(ad − bc)/(bd)', '(c − a)/(bd)'], w: 'Common denominator bd: bc/(bd) − ad/(bd) = (bc − ad)/(bd).' } },
+    { t: 'Recipe 2: proof by contraposition', b: '<p>To prove <b>“∀x, if P(x) then Q(x)”</b>:</p><p><b>1.</b> Write the contrapositive: <b>“∀x, if not Q(x), then not P(x).”</b> Negate both parts AND swap them.</p><p><b>2.</b> Prove that with a normal direct proof: “Suppose x is any particular but arbitrarily chosen … such that not Q(x).” Then show not P(x).</p><p><b>3.</b> Say: the contrapositive is true, and it is logically equivalent to the original, so the original is true.</p>',
+      think: 'Why it’s allowed: p → q ≡ ~q → ~p. Same truth table (you saw this in 2.2).',
+      trap: 'Converse = swap only (if Q then P). Inverse = negate only (if not P then not Q). Neither one means the same thing. Contrapositive = negate AND swap.',
+      q: { q: 'Contrapositive of “if n² is even, then n is even”:', o: ['If n is odd, then n² is odd.', 'If n is even, then n² is even.', 'If n² is odd, then n is odd.', 'n² is even and n is odd.'], w: 'Negate both (even → odd) and swap them.' } },
+    { t: 'Example: if n² is even, then n is even', b: '<p><b>Theorem:</b> For every integer n, if n² is even, then n is even.</p><p>Directly, n² = 2k gives n = √(2k), a dead end. Flipping it gives n = 2k + 1, which is easy to square.</p>',
+      ex: '<b>Contrapositive:</b> For every integer n, if n is odd, then n² is odd.<br><br>Suppose n is any particular but arbitrarily chosen odd integer.<br>By definition of odd, n = 2k + 1 for some integer k.<br>n² = (2k + 1)²<br>= (2k + 1)(2k + 1)<br>= 4k² + 2k + 2k + 1<br>= 4k² + 4k + 1<br>= 2(2k² + 2k) + 1<br>Let t = 2k² + 2k. t is an integer because products and sums of integers are integers.<br>So n² = 2t + 1, which is odd.<br>Hence the contrapositive is true, and since it is logically equivalent to the original, the original statement is true. Q.E.D.',
+      q: { q: '(2k + 1)² = ?', o: ['4k² + 4k + 1', '4k² + 1', '2k² + 4k + 1', '4k² + 2k + 1'], w: '(2k + 1)(2k + 1) = 4k² + 2k + 2k + 1 = 4k² + 4k + 1.' } },
+    { t: 'Same theorem, by contradiction', b: '<p>Any if-then can be proved either way. Here is “if n² is even, then n is even” again, by contradiction:</p>',
+      ex: 'Suppose not. Suppose there is an integer n such that n² is even and n is odd.<br>Since n is odd, n = 2k + 1, so n² = 2(2k² + 2k) + 1 (same algebra as before), which is odd.<br>So n² is both even and odd. That contradicts the theorem that no integer is both even and odd.<br>Hence the supposition is false, and the statement is true. Q.E.D.',
+      think: '<b>Which one should I pick?</b><br>“There is no…”, “… is irrational”, “… is not divisible by…” → contradiction.<br>“If P then Q” where “not Q” is easy to use (n is odd → n = 2k + 1) → contraposition.<br>Stuck? Contradiction works for anything.',
+      q: { q: 'Prove “There is no greatest even integer.” Best method?', o: ['Contradiction', 'Contraposition', 'Checking examples', 'A counterexample'], w: '“There is no…” has no if-then to flip. Suppose there IS a greatest even integer.' } },
+    { t: '4.8: two famous results (know them, don’t write them)', b: '<p>Your professor said you will <b>not</b> have to reproduce these two proofs. You just need to know the results and the idea.</p><p><b>√2 is irrational.</b><br>Idea: suppose √2 = m/n in lowest terms. Then m² = 2n², so m is even. Then n is even too. Both even means it wasn’t in lowest terms. Contradiction.</p><p><b>There are infinitely many primes.</b><br>Idea: suppose the only primes are p₁, p₂, …, pₙ. Let N = p₁ · p₂ ⋯ pₙ + 1. Some prime divides N, but every pᵢ leaves remainder 1. Contradiction.</p><p><b>Helper result:</b> If p is prime and p | a, then p ∤ (a + 1). (Example: 3 | 12, so 3 ∤ 13.)</p>',
+      think: 'Both famous proofs are proofs by contradiction. And the √2 proof uses the 4.7 result: m² even means m is even.',
+      q: { q: 'Which of these can you USE as a known fact on Quiz 3?', o: ['√2 is irrational', 'The sum of two irrational numbers is irrational', 'Every prime is odd', 'N = p₁p₂⋯pₙ + 1 is always prime'], w: 'That’s the 4.8 theorem. The others are false: √2 + (−√2) = 0, 2 is prime, and 2·3·5·7·11·13 + 1 = 30031 = 59 · 509.' } },
+    { t: 'Using “√2 is irrational” as a tool', b: '<p>A very likely quiz question: prove that some number built from √2 is irrational. The move: suppose it’s rational, then <b>solve for √2</b>.</p>',
+      ex: '<b>Theorem:</b> 1 + 3√2 is irrational.<br><br>Suppose not. Suppose 1 + 3√2 is rational.<br>Then 1 + 3√2 = a/b for some integers a and b with b ≠ 0.<br>Subtract 1:<br>3√2 = a/b − 1 = a/b − b/b = (a − b)/b<br>Divide by 3:<br>√2 = (a − b)/(3b)<br>a − b and 3b are integers, and 3b ≠ 0 because b ≠ 0.<br>So √2 is rational. That contradicts the theorem that √2 is irrational.<br>Hence the supposition is false, and 1 + 3√2 is irrational. Q.E.D.',
+      think: 'Pattern: undo the + and × until √2 is alone. If √2 = (integer)/(nonzero integer), that’s the contradiction.',
+      q: { q: 'Suppose 5 − √2 = a/b. Solving for √2 gives:', o: ['√2 = (5b − a)/b', '√2 = (a − 5b)/b', '√2 = (5 − a)/b', '√2 = a/(5b)'], w: '√2 = 5 − a/b = 5b/b − a/b = (5b − a)/b.' } },
+    { t: 'The quiz templates (copy these)', b: '<div class="box ex tpl"><b>Proof (by contradiction):</b> Suppose not. That is, suppose ______. [the exact negation]<br>By definition of ___, ______.<br>…algebra…<br>So ______, which contradicts ______.<br>Hence the supposition is false, and ______ is true. Q.E.D.</div><div class="box ex tpl"><b>Proof (by contraposition):</b> The contrapositive is: for every ___, if ______ [not Q], then ______ [not P].<br>Suppose ___ is any particular but arbitrarily chosen ___ such that ______ [not Q].<br>By definition of ___, ______.<br>…algebra…<br>So ______ [not P].<br>Hence the contrapositive is true, and since it is logically equivalent to the original, the statement is true. Q.E.D.</div>',
+      think: '12 minutes is about 5 minutes per proof. Write the first line and the last line FIRST. They earn points even if the algebra slips.',
+      q: { q: 'The last line of a proof by contradiction says:', o: ['Hence the supposition is false, and the statement is true.', 'Hence the contrapositive is true.', 'So it works for n = 1, 2 and 3.', 'So the supposition is true.'], w: 'You supposed it was false and broke math, so the supposition must be false.' } }
+  ],
+  items: [
+    { type: 'mc', q: 'Prove by contradiction: <b>There is no greatest even integer.</b> What is the first line?', o: ['Suppose not. Suppose there is a greatest even integer N, so N ≥ n for every even integer n.', 'Suppose there is no greatest even integer.', 'Let N = 100. Then N + 2 = 102 is bigger.', 'Suppose every even integer is less than N + 2.'], sol: 'Negate “there is no greatest even integer”: there IS one. Name it N.<br>Then N + 2 is even (N = 2k, so N + 2 = 2(k + 1)) and N + 2 > N. Contradiction.' },
+    { type: 'mc', q: 'Prove by contraposition: <b>For every integer n, if 5n + 3 is even, then n is odd.</b> Which statement do you actually prove?', o: ['For every integer n, if n is even, then 5n + 3 is odd.', 'For every integer n, if n is odd, then 5n + 3 is even.', 'For every integer n, if 5n + 3 is odd, then n is even.', 'There is an integer n such that 5n + 3 is even and n is even.'], sol: 'Contrapositive: negate both parts and swap them.<br>not Q = n is even. not P = 5n + 3 is odd.<br>“If n is even, then 5n + 3 is odd.”<br>(Option 2 is the converse, option 3 is the inverse, option 4 is the negation.)' },
+    { type: 'mc', q: 'Prove by contradiction: <b>For every integer n, if n² is odd, then n is odd.</b> What do you suppose?', o: ['There is an integer n such that n² is odd and n is even.', 'For every integer n, if n² is even, then n is even.', 'There is an integer n such that n² is even and n is odd.', 'There is an integer n such that if n² is odd, then n is even.'], sol: 'Negation of ∀n, P(n) → Q(n) is ∃n such that P(n) and not Q(n).<br>P = n² is odd. not Q = n is even.<br>Suppose there is an integer n such that n² is odd and n is even.' },
+    { type: 'mc', q: 'Prove by contradiction: <b>The difference of any rational number and any irrational number is irrational.</b> What do you suppose?', o: ['There are a rational number r and an irrational number s such that r − s is rational.', 'There are a rational number r and an irrational number s such that r − s is irrational.', 'r and s are both rational, and r − s is rational.', 'r − s = a/b for some real numbers a and b.'], sol: 'Keep the setup (r rational, s irrational) and negate the conclusion (r − s irrational → r − s rational).' },
+    { type: 'ms', q: 'Statement: <b>For all integers m and n, if mn is even, then m is even or n is even.</b> Select every correct way to start a proof.', o: [['Contraposition: Suppose m and n are integers with m odd and n odd. (Then show mn is odd.)', true], ['Contradiction: Suppose there are integers m and n such that mn is even, m is odd, and n is odd.', true], ['Suppose m and n are integers with mn odd.', false], ['Suppose m is even or n is even.', false]], sol: 'not (m even or n even) = m odd AND n odd (De Morgan).<br>Contraposition starts from that: m odd and n odd, then shows mn is odd.<br>Contradiction keeps “mn is even” and adds “m odd and n odd.”<br>“mn odd” is the inverse’s starting point, and “m even or n even” starts the converse.' },
+    { type: 'mc', q: 'Contrapositive of: <b>For every real number x, if x² > 4, then x > 2 or x < −2.</b>', o: ['For every real number x, if −2 ≤ x ≤ 2, then x² ≤ 4.', 'For every real number x, if x > 2 or x < −2, then x² > 4.', 'For every real number x, if x² ≤ 4, then −2 ≤ x ≤ 2.', 'For every real number x, if −2 < x < 2, then x² < 4.'], sol: 'not Q: not (x > 2 or x < −2) = x ≤ 2 and x ≥ −2, which is −2 ≤ x ≤ 2.<br>not P: not (x² > 4) = x² ≤ 4.<br>Swap: if −2 ≤ x ≤ 2, then x² ≤ 4.<br>(Watch the endpoints: the negation of &gt; is ≤.)' },
+    { type: 'tf', q: 'A statement and its contrapositive are logically equivalent.', a: true, sol: 'p → q ≡ ~q → ~p. Same truth table. That is why proof by contraposition works.' },
+    { type: 'tf', q: 'To prove “∀x, if P(x) then Q(x)” by contradiction, you suppose that P(x) is false.', a: false, sol: 'You suppose the WHOLE statement is false: there is an x where P(x) is true and Q(x) is false.' },
+    { type: 'tf', q: 'The sum of any two irrational numbers is irrational.', a: false, sol: 'Counterexample: √2 and −√2 are both irrational, but √2 + (−√2) = 0, and 0 = 0/1 is rational.' },
+    { type: 'mc', q: 'Prove: <b>5 − √2 is irrational.</b> Which method fits best?', o: ['Contradiction: suppose 5 − √2 is rational', 'Contraposition: flip the if-then', 'Check a few decimal places', 'Find a counterexample'], sol: '“Irrational” means “not rational,” and there is no if-then to flip. Suppose 5 − √2 = a/b, solve: √2 = (5b − a)/b, so √2 would be rational, contradicting the theorem that √2 is irrational.' },
+    { type: 'mc', q: 'Prove: <b>For every integer n, if 3n + 1 is even, then n is odd.</b> Which method is cleanest?', o: ['Contraposition: suppose n is even, show 3n + 1 is odd', 'Contradiction is the only way', 'A direct proof starting from n = 2k + 1', 'Checking n = 1, 3, 5'], sol: 'not Q = “n is even” is easy to use: n = 2k.<br>3n + 1 = 3(2k) + 1 = 6k + 1 = 2(3k) + 1, which is odd. Done.<br>(Contradiction works too, it’s just longer. Starting from n = 2k + 1 would assume the conclusion.)' },
+    { type: 'fill', q: '<b>Fill in the proof by contradiction:</b> There is no greatest even integer.', parts: ['Suppose not. That is, suppose there is ', { pick: ['a greatest even integer N', 'no greatest even integer', 'an even integer greater than every integer'], a: 0 }, '. Then N ≥ n for every even integer n. Since N is even, N = 2k for some integer k. Let M = ', { pick: ['N + 2', 'N + 1', 'N − 2'], a: 0 }, '. Then M = 2k + 2 = 2(', { alg: 'k+1', v: 'k' }, '), so M is even. Also M > N. This contradicts ', { pick: ['the supposition that N is the greatest even integer', 'the definition of odd', 'the fact that √2 is irrational'], a: 0 }, '. Hence the supposition is false, and there is no greatest even integer. Q.E.D.'] },
+    { type: 'fill', q: '<b>Fill in the proof by contraposition:</b> For every integer n, if n² is odd, then n is odd.', parts: ['The contrapositive is: for every integer n, if ', { pick: ['n is even', 'n is odd', 'n² is even'], a: 0 }, ', then ', { pick: ['n² is even', 'n² is odd', 'n is odd'], a: 0 }, '. Suppose n is any particular but arbitrarily chosen even integer. Then n = 2k for some integer k. So n² = (2k)² = ', { alg: '4k^2', v: 'k' }, ' = 2(', { alg: '2k^2', v: 'k' }, '). Since 2k² is an integer, n² is even. So the contrapositive is true, and since a statement is ', { pick: ['logically equivalent to its contrapositive', 'logically equivalent to its converse', 'always true'], a: 0 }, ', the original statement is true. Q.E.D.'] },
+    { type: 'fill', q: '<b>Fill in the proof:</b> 3√2 − 7 is irrational. (You may use that √2 is irrational.)', parts: ['Suppose not. Suppose 3√2 − 7 is ', { pick: ['rational', 'irrational', 'an integer'], a: 0 }, '. Then 3√2 − 7 = a/b for some integers a and b with b ≠ 0. Add 7: 3√2 = a/b + 7 = ', { pick: ['(a + 7b)/b', '(a + 7)/b', '(7a + b)/b'], a: 0 }, '. Divide by 3: √2 = ', { pick: ['(a + 7b)/(3b)', '(a + 7b)/3', '3(a + 7b)/b'], a: 0 }, '. Since a + 7b and 3b are integers and 3b ≠ 0, √2 is rational. This contradicts ', { pick: ['the theorem that √2 is irrational', 'the supposition that b ≠ 0', 'the definition of even'], a: 0 }, '. Hence 3√2 − 7 is irrational. Q.E.D.'] },
+    { type: 'parsons', proof: 'cp5n3', q: 'Build the proof by contraposition. Tap lines in order; some lines are traps.' },
+    { type: 'parsons', proof: 'ctrProd', q: 'Build the proof by contradiction. Watch the division step.' },
+    { type: 'parsons', proof: 'ctrN2', q: 'Build the proof by contradiction. This one uses “if n² is even, then n is even” in the middle.' },
+    { type: 'mc', q: 'Find the mistake. To prove “if n² is even, then n is even,” a student writes: “Suppose n is even, so n = 2k. Then n² = 4k² = 2(2k²), which is even. Q.E.D.”', o: ['That proves the converse (if n is even, then n² is even). Contraposition starts from “n is odd.”', 'Nothing is wrong.', '4k² is not even.', 'It should start with n = 2k + 2.'], sol: 'The student started from Q (n is even) and reached P (n² is even). That is the converse.<br>Contrapositive: if n is odd, then n² is odd. Start from n = 2k + 1.' },
+    { type: 'mc', q: 'Find the mistake. “Theorem: 2 + √2 is irrational. Proof: Suppose 2 + √2 is irrational. Then …”', o: ['It supposes the conclusion. It should suppose 2 + √2 is rational.', 'It should start with “Let √2 = 1.414.”', 'It should be a proof by contraposition.', 'Nothing is wrong.'], sol: 'In a proof by contradiction you suppose the statement is FALSE. False here means 2 + √2 is rational, so 2 + √2 = a/b.' },
+    { type: 'mc', q: 'p is prime and p | a. What do you know about a + 1?', o: ['p ∤ (a + 1)', 'p | (a + 1)', 'a + 1 is prime', 'Nothing'], sol: 'This is one of the 4.8 results. Why: if p | a and p | (a + 1), then p divides their difference (a + 1) − a = 1. But a prime is at least 2 and can’t divide 1.<br>Example: 5 | 20, and 5 ∤ 21.' },
+    { type: 'num', q: 'Euclid’s idea: pretend the only primes are 2, 3 and 5. Compute N = 2 · 3 · 5 + 1.', a: 31, sol: 'N = 2 · 3 · 5 + 1 = 30 + 1 = 31<br>31 ÷ 2, 31 ÷ 3 and 31 ÷ 5 each leave remainder 1, so none of them divides 31.<br>But every integer > 1 has a prime factor, so there is a prime missing from the list (here, 31 itself). That is why the list of primes can never be finished.' },
+    { type: 'tf', q: 'In the infinitely-many-primes proof, N = p₁ · p₂ ⋯ pₙ + 1 is always a prime number.', a: false, sol: '2 · 3 · 5 · 7 · 11 · 13 + 1 = 30031 = 59 · 509, not prime.<br>The proof only needs N to have SOME prime factor that is not on the list.' },
+    { type: 'mc', q: 'In the proof that √2 is irrational, you reach m² = 2n². What comes next?', o: ['m² is even, so m is even (the 4.7 result)', 'm = 2n', 'm and n are both odd', 'm² is odd, so m is odd'], sol: 'm² = 2n² is 2 times an integer, so m² is even. By the 4.7 result (if n² is even, then n is even), m is even.<br>That is the link between 4.7 and 4.8.' },
+    { type: 'mc', q: 'Negate (for a proof by contradiction): <b>The product of any two odd integers is odd.</b>', o: ['There are two odd integers whose product is even.', 'The product of any two even integers is even.', 'There are two even integers whose product is odd.', 'Every product of two odd integers is even.'], sol: '“For all odd m, n: mn is odd” negates to “there exist odd m, n with mn not odd,” and for integers “not odd” = even.' },
+    { type: 'write', kind: 'proof', q: 'Prove by contraposition: <m>For every integer n, if n³ is even, then n is even.</m>', model: 'Proof (by contraposition): The contrapositive is: for every integer n, if n is odd, then n³ is odd.\n\nSuppose n is any particular but arbitrarily chosen odd integer. By definition of odd, n = 2k + 1 for some integer k.\n\nn³ = (2k + 1)³\n= (2k + 1)(2k + 1)(2k + 1)\n= (4k² + 4k + 1)(2k + 1)\n= 8k³ + 4k² + 8k² + 4k + 2k + 1\n= 8k³ + 12k² + 6k + 1\n= 2(4k³ + 6k² + 3k) + 1\n\nLet t = 4k³ + 6k² + 3k. Then t is an integer because products and sums of integers are integers. So n³ = 2t + 1, which is odd by definition of odd.\n\nHence the contrapositive is true, and since a statement is logically equivalent to its contrapositive, the original statement is true. Q.E.D.' },
+    { type: 'write', kind: 'proof', q: 'Prove by contradiction: <m>1 + 3√2 is irrational.</m> You may use that √2 is irrational.', model: 'Proof (by contradiction): Suppose not. That is, suppose 1 + 3√2 is rational.\n\nBy definition of rational, 1 + 3√2 = a/b for some integers a and b with b ≠ 0.\n\nSubtract 1:\n3√2 = a/b − 1 = a/b − b/b = (a − b)/b\n\nDivide by 3:\n√2 = (a − b)/(3b)\n\na − b and 3b are integers because differences and products of integers are integers, and 3b ≠ 0 because b ≠ 0. So √2 is rational by definition of rational.\n\nThis contradicts the theorem that √2 is irrational. Hence the supposition is false, and 1 + 3√2 is irrational. Q.E.D.' },
+    { type: 'write', kind: 'proof', q: 'Prove by contradiction: <m>There is no least positive rational number.</m>', model: 'Proof (by contradiction): Suppose not. That is, suppose there is a least positive rational number r. Then r > 0, and r ≤ x for every positive rational number x.\n\nBy definition of rational, r = a/b for some integers a and b with b ≠ 0.\n\nConsider r/2. Then r/2 = a/(2b). a and 2b are integers and 2b ≠ 0, so r/2 is rational.\n\nAlso r/2 > 0 because r > 0, and r/2 < r because r > 0.\n\nSo r/2 is a positive rational number smaller than r. This contradicts the supposition that r is the least positive rational number.\n\nHence the supposition is false, and there is no least positive rational number. Q.E.D.' },
+    { type: 'write', kind: 'proof', q: 'Prove in two ways, once by contraposition and once by contradiction: <m>For every integer n, if n² is odd, then n is odd.</m>', model: 'By contraposition:\nThe contrapositive is: for every integer n, if n is even, then n² is even.\nSuppose n is any particular but arbitrarily chosen even integer. Then n = 2k for some integer k.\nn² = (2k)² = 4k² = 2(2k²). 2k² is an integer, so n² is even.\nHence the contrapositive is true, and since it is logically equivalent to the original, the statement is true. Q.E.D.\n\nBy contradiction:\nSuppose not. Suppose there is an integer n such that n² is odd and n is even.\nSince n is even, n = 2k for some integer k, so n² = (2k)² = 4k² = 2(2k²), which is even.\nSo n² is both odd and even. This contradicts the theorem that no integer is both even and odd.\nHence the supposition is false, and the statement is true. Q.E.D.' }
+  ]
+});
+
+PLANS.indir = { why: 'Pick the method, write the exact first line, do the algebra, and finish with the right last line.',
+  moves: [
+    { t: 'Pick the method (10 seconds)', s: ['“There is no …”, “… is irrational”, “… is not divisible by …”, “infinitely many …” → <b>contradiction</b>.', '“If P then Q” where “not Q” is easy to write with a definition (n is odd → n = 2k + 1) → <b>contraposition</b>.', 'Not sure? Contradiction works for anything.'] },
+    { t: 'Proof by contradiction', s: ['<b>Suppose not.</b> Write the exact negation. “∀x, if P(x) then Q(x)” becomes “∃x such that P(x) and not Q(x).”', 'Unpack with definitions: even n = 2k, odd n = 2k + 1, rational r = a/b (integers, b ≠ 0), d | n means n = dk.', 'Do algebra until something impossible appears: integer = 1/2, even and odd, √2 = integer/integer, a number bigger than the biggest.', 'Name it: “This contradicts …”.', '“Hence the supposition is false, and [the statement] is true.” Q.E.D.'] },
+    { t: 'Proof by contraposition', s: ['Write the contrapositive: <b>if not Q, then not P</b>. Negate both parts AND swap them.', '“Suppose x is any particular but arbitrarily chosen … such that [not Q].”', 'Direct proof with definitions until you reach [not P].', '“Hence the contrapositive is true, and since it is logically equivalent to the original, the statement is true.” Q.E.D.'] },
+    { t: 'Using the 4.8 results', s: ['√2 is irrational: solve your equation for √2. If √2 = integer/nonzero integer, that is the contradiction.', 'If p is prime and p | a, then p ∤ (a + 1).', 'There are infinitely many primes. Know the idea (N = p₁ ⋯ pₙ + 1), but you won’t write the proof.'] },
+    { t: '12-minute quiz timing', s: ['Read every question first (30 seconds).', 'For each proof, write the method and the first line before any algebra.', 'About 5 minutes per proof. Save 1 minute to write the last lines.'] }],
+  ex: { q: 'Prove by contraposition: for every integer n, if n² is even, then n is even.', a: 'Contrapositive: for every integer n, if n is odd, then n² is odd.<br>Suppose n is any particular but arbitrarily chosen odd integer. Then n = 2k + 1 for some integer k.<br>n² = (2k + 1)² = 4k² + 4k + 1 = 2(2k² + 2k) + 1<br>Let t = 2k² + 2k, an integer. So n² = 2t + 1 is odd.<br>Hence the contrapositive is true, so the original statement is true. Q.E.D.' },
+  traps: ['Writing the negation of an if-then as another if-then. It’s “P and not Q.”', 'Proving the converse (if Q then P) instead of the contrapositive.', 'Supposing the conclusion instead of its negation.', 'Not saying WHAT the contradiction is.', 'Writing a/b without “for some integers a and b with b ≠ 0.”'] };
+
+/* ===== Lab: the first-line machine ===== */
+const FIRSTS = [
+  { s: 'There is no greatest integer.', best: 'ctr', why: '“There is no …” has no if-then to flip.',
+    ctr: { first: 'Suppose not. Suppose there is a greatest integer N, so N ≥ n for every integer n.', aim: 'Look at N + 1. It is an integer, and N + 1 > N. That contradicts N being the greatest.', wrong: [['Suppose there is no greatest integer.', 'That supposes the statement itself. Suppose the opposite.'], ['Let n be any integer. Then n + 1 > n.', 'True, but that is not a supposition about the opposite. Start with “Suppose not.”']] },
+    cp: null, cpNote: 'There is no if-then to flip, so contraposition doesn’t apply. Use contradiction.' },
+  { s: 'For every integer n, if n² is even, then n is even.', best: 'cp', why: '“n is odd” is easy to use: n = 2k + 1. Squaring that is simple.',
+    ctr: { first: 'Suppose not. Suppose there is an integer n such that n² is even and n is odd.', aim: 'n = 2k + 1, so n² = 2(2k² + 2k) + 1 is odd. Then n² is even and odd: contradiction.', wrong: [['Suppose there is an integer n such that if n² is even, then n is odd.', 'The negation of an if-then is “P and not Q,” not another if-then.'], ['Suppose n² is odd and n is odd.', 'Keep P (n² is even). Only Q gets negated.']] },
+    cp: { contra: 'For every integer n, if n is odd, then n² is odd.', first: 'Suppose n is any particular but arbitrarily chosen odd integer.', aim: 'Show n² is odd: n = 2k + 1, so n² = 4k² + 4k + 1 = 2(2k² + 2k) + 1.', wrong: [['Suppose n is any particular but arbitrarily chosen even integer.', 'That starts the converse (if n is even, then n² is even).'], ['Suppose n² is odd.', 'The contrapositive starts from not Q: n is odd.']] } },
+  { s: 'For every integer n, if 5n + 3 is even, then n is odd.', best: 'cp', why: '“n is even” gives n = 2k, and 5(2k) + 3 is quick.',
+    ctr: { first: 'Suppose not. Suppose there is an integer n such that 5n + 3 is even and n is even.', aim: 'n = 2k, so 5n + 3 = 10k + 3 = 2(5k + 1) + 1 is odd. Then 5n + 3 is even and odd: contradiction.', wrong: [['Suppose there is an integer n such that 5n + 3 is odd and n is even.', 'Keep P (5n + 3 is even). Only Q gets negated.'], ['Suppose 5n + 3 is even and n is odd.', 'Nothing is negated there. Q (n is odd) must flip to “n is even.”']] },
+    cp: { contra: 'For every integer n, if n is even, then 5n + 3 is odd.', first: 'Suppose n is any particular but arbitrarily chosen even integer.', aim: 'Show 5n + 3 is odd: n = 2k, so 5n + 3 = 10k + 3 = 2(5k + 1) + 1.', wrong: [['Suppose n is any particular but arbitrarily chosen odd integer.', 'That starts the converse. The contrapositive starts from not Q: n is even.'], ['Suppose 5n + 3 is odd.', 'That is the inverse’s starting point. Start from not Q.']] } },
+  { s: 'For all integers m and n, if mn is even, then m is even or n is even.', best: 'cp', why: '“m odd and n odd” gives two easy formulas to multiply.',
+    ctr: { first: 'Suppose not. Suppose there are integers m and n such that mn is even, m is odd, and n is odd.', aim: 'm = 2a + 1, n = 2b + 1, so mn = 4ab + 2a + 2b + 1 = 2(2ab + a + b) + 1 is odd. Then mn is even and odd: contradiction.', wrong: [['Suppose there are integers m and n such that mn is even and m is odd or n is odd.', 'De Morgan: not (m even OR n even) = m odd AND n odd.'], ['Suppose mn is odd, m is odd, and n is odd.', 'Keep P (mn is even). Only Q gets negated.']] },
+    cp: { contra: 'For all integers m and n, if m is odd and n is odd, then mn is odd.', first: 'Suppose m and n are any particular but arbitrarily chosen odd integers.', aim: 'Show mn is odd: (2a + 1)(2b + 1) = 4ab + 2a + 2b + 1 = 2(2ab + a + b) + 1.', wrong: [['Suppose m is odd or n is odd.', 'De Morgan: not (m even OR n even) = m odd AND n odd.'], ['Suppose mn is odd.', 'That is the inverse’s starting point. Start from not Q.']] } },
+  { s: '3√2 − 7 is irrational.', best: 'ctr', why: '“Irrational” means “not rational,” and there is no if-then to flip.',
+    ctr: { first: 'Suppose not. Suppose 3√2 − 7 is rational, so 3√2 − 7 = a/b for some integers a and b with b ≠ 0.', aim: 'Solve for √2: √2 = (a + 7b)/(3b), integers on top and bottom, 3b ≠ 0. So √2 is rational, contradicting the theorem that √2 is irrational.', wrong: [['Suppose 3√2 − 7 is irrational.', 'That supposes the conclusion.'], ['Suppose 3√2 − 7 = a/b for some real numbers a and b.', 'Rational means a and b are INTEGERS, with b ≠ 0.']] },
+    cp: null, cpNote: 'There is no if-then to flip. “Is irrational” means “is not rational”, so suppose it IS rational.' },
+  { s: 'The sum of any rational number and any irrational number is irrational.', best: 'ctr', why: 'The contrapositive (“if r + s is rational, then r is irrational or s is rational”) is awkward. Contradiction is cleaner.',
+    ctr: { first: 'Suppose not. Suppose there are a rational number r and an irrational number s such that r + s is rational.', aim: 'r = a/b and r + s = c/d, so s = c/d − a/b = (bc − ad)/(bd) is rational: contradiction.', wrong: [['Suppose there are a rational r and an irrational s such that r + s is irrational.', 'That is the conclusion. Negate it: r + s is rational.'], ['Suppose r and s are both rational and r + s is rational.', 'Keep the setup: r rational and s irrational.']] },
+    cp: null, cpNote: 'You could flip it, but the contrapositive (“if r + s is rational, then r is irrational or s is rational”) is messy. Use contradiction.' },
+  { s: 'For every integer n, n² − 2 is not divisible by 4.', best: 'ctr', why: 'A “not” statement with no if-then: suppose it IS divisible.',
+    ctr: { first: 'Suppose not. Suppose there is an integer n such that n² − 2 is divisible by 4.', aim: 'n² = 4k + 2 is even, so n is even, n = 2m. Then 4m² = 4k + 2 gives m² − k = 1/2, an integer equal to 1/2: contradiction.', wrong: [['Suppose n² − 2 is not divisible by 4.', 'That is the statement itself.'], ['Suppose 4 | (n² − 2) for every integer n.', 'The negation of “for every n, …” is “there IS an n such that not …”, not “for every n.”']] },
+    cp: null, cpNote: 'No if-then here, and it’s a “not” statement. Use contradiction.' },
+  { s: 'There is no least positive rational number.', best: 'ctr', why: '“There is no …” → suppose there is one.',
+    ctr: { first: 'Suppose not. Suppose there is a least positive rational number r, so r ≤ x for every positive rational x.', aim: 'Look at r/2. It is rational, positive, and smaller than r: contradiction.', wrong: [['Suppose there is no least positive rational number.', 'That supposes the statement itself.'], ['Suppose r = 1/2 is the least positive rational number.', 'Don’t pick a specific value. Call it r and use only what “least positive rational” means.']] },
+    cp: null, cpNote: 'There is no if-then to flip. Use contradiction.' }
+];
+function labIndir(body) {
+  const st = { i: 0, m: 'ctr', got: false };
+  const w = el('div', 'stack'); body.appendChild(w);
+  w.innerHTML = '<div class="card stack"><div><span class="eyebrow">First-line machine</span><h2 class="lab-h">Write the first line. That’s half the points.</h2><p class="muted">Pick a statement and a method. Choose the right opening line, then see where the proof is headed.</p></div>' +
+    '<label class="fl-pick"><span class="eyebrow">Statement</span><select id="fl-s">' + FIRSTS.map((f, i) => '<option value="' + i + '">' + (i + 1) + '. ' + esc(f.s) + '</option>').join('') + '</select></label>' +
+    '<div class="eq-big fl-s" id="fl-text"></div>' +
+    '<div class="subtabs" id="fl-m"><button type="button" data-m="ctr">💥 Contradiction</button><button type="button" data-m="cp">🔁 Contraposition</button></div>' +
+    '<div id="fl-body" class="stack"></div>' +
+    '<div class="row"><button type="button" class="btn ghost" id="fl-prev">← Previous</button><button type="button" class="btn" id="fl-next">Next statement →</button></div></div>';
+  const F = () => FIRSTS[st.i];
+  function draw() {
+    const f = F(); st.got = false;
+    $('#fl-s', w).value = st.i;
+    $('#fl-text', w).textContent = f.s;
+    $$('#fl-m button', w).forEach(b => b.setAttribute('aria-pressed', b.dataset.m === st.m));
+    const out = $('#fl-body', w);
+    const M = st.m === 'cp' ? f.cp : f.ctr;
+    if (!M) { out.innerHTML = '<div class="box trap"><span class="eyebrow">Contraposition doesn’t fit</span>' + f.cpNote + '</div>'; return; }
+    const opts = shuffled([[M.first, true, '']].concat(M.wrong.map(([t, why]) => [t, false, why])), 'fl' + st.i + st.m);
+    out.innerHTML = (st.m === 'cp' ? '<div class="box think"><span class="eyebrow">Step 1: the contrapositive</span><button type="button" class="btn ghost sm" id="fl-cshow">Show it</button><div id="fl-c" hidden>' + esc(M.contra) + '</div></div>' : '') +
+      '<div class="q">Which is the right first line?</div><div class="opts" id="fl-o">' + opts.map(([t, ok, why], k) => '<button type="button" class="opt" data-k="' + k + '">' + esc(t) + '</button>').join('') + '</div><div class="fb" id="fl-fb" aria-live="polite"></div><div id="fl-rev"></div>';
+    const fb = $('#fl-fb', w);
+    $('#fl-o', w).addEventListener('click', e => {
+      const b = e.target.closest('.opt'); if (!b || st.got || b.classList.contains('bad')) return;
+      const [, ok, why] = opts[+b.dataset.k];
+      if (ok) { st.got = true; b.classList.add('ok'); fb.className = 'fb ok'; fb.textContent = 'Yes. That’s the opening line.'; reveal(); burst(b); }
+      else { b.classList.add('bad'); fb.className = 'fb bad'; fb.textContent = why; }
+    });
+    const cs = $('#fl-cshow', w); if (cs) cs.addEventListener('click', () => { $('#fl-c', w).hidden = false; cs.remove(); });
+  }
+  function reveal() {
+    const f = F(), M = st.m === 'cp' ? f.cp : f.ctr;
+    const cEl = $('#fl-c', w); if (cEl) { cEl.hidden = false; const cs = $('#fl-cshow', w); if (cs) cs.remove(); }
+    const last = st.m === 'cp' ? 'Hence the contrapositive is true, and since it is logically equivalent to the original, the statement is true. Q.E.D.' : 'Hence the supposition is false, and the statement is true. Q.E.D.';
+    const bestTxt = f.best === st.m ? '<span class="tag good">best method here</span> ' + f.why : '<span class="tag">works, but</span> ' + (f.best === 'ctr' ? 'contradiction is the better pick. ' : 'contraposition is cleaner. ') + f.why;
+    $('#fl-rev', w).innerHTML = '<div class="box ex"><span class="eyebrow">The skeleton</span><b>First line:</b> ' + esc(M.first) + '<br><b>Where it goes:</b> ' + esc(M.aim) + '<br><b>Last line:</b> ' + last + '</div><p class="fl-best">' + bestTxt + '</p>';
+  }
+  w.addEventListener('click', e => {
+    const b = e.target.closest('button'); if (!b) return;
+    if (b.dataset.m) { st.m = b.dataset.m; draw(); }
+    else if (b.id === 'fl-next') { st.i = (st.i + 1) % FIRSTS.length; draw(); }
+    else if (b.id === 'fl-prev') { st.i = (st.i - 1 + FIRSTS.length) % FIRSTS.length; draw(); }
+  });
+  $('#fl-s', w).addEventListener('change', e => { st.i = +e.target.value; draw(); });
+  draw();
+}
+
 /* ===== Core: state, helpers, Claude, shared components ===== */
 const $ = (s, r = document) => r.querySelector(s), $$ = (s, r = document) => [...r.querySelectorAll(s)];
 function el(tag, cls, html) { const e = document.createElement(tag); if (cls) e.className = cls; if (html != null) e.innerHTML = html; return e; }
@@ -2974,7 +3217,7 @@ function sayMath(input) {
   R(/×/g, ' times ');
   R(/([”’.])\s*→/g, '$1, so ');
   R(/[⇔⟺↔⟷]/g, ' if and only if '); R(/[→⇒⟶]/g, ' implies '); R(/↦/g, ' maps to '); R(/←/g, ' ');
-  R(/Σ/g, ' the sum of '); R(/Π/g, ' the product of ');
+  R(/Σ/g, ' the sum of '); R(/Π/g, ' the product of '); R(/(\d)√/g, '$1 times the square root of '); R(/√/g, ' the square root of ');
   R(/∴/g, ' therefore '); R(/≡/g, ' is equivalent to ');
   R(/∧/g, ' and '); R(/∨/g, ' or '); R(/⊕/g, ' exclusive or '); R(/[~¬]\s*/g, ' not ');
   R(/≠/g, ' is not equal to '); R(/≤/g, ' is less than or equal to '); R(/≥/g, ' is greater than or equal to ');
@@ -3852,7 +4095,7 @@ function labCases(host) {
   c.addEventListener('click', e => { const b = e.target.closest('[data-d]'); if (b) { d = +b.dataset.d; S.caseD = d; save(); draw(); } });
   draw();
 }
-const LABS = { sets: labSets, graphs: labGraphs, logic: labLogic, cond: labCond, quant: labQuant, neg: labNeg, multi: labMulti, proof: labProof, div: labDiv, qr: labQR, seq: labSeq, ind: labInd };
+const LABS = { sets: labSets, graphs: labGraphs, logic: labLogic, cond: labCond, quant: labQuant, neg: labNeg, multi: labMulti, proof: labProof, div: labDiv, qr: labQR, seq: labSeq, ind: labInd, indir: labIndir };
 
 /* ===== Truth table builder: drag logic tiles into place, then fill the table and check it ===== */
 const TT_PAL = ['p', 'q', 'r', 's', '~', '∧', '∨', '→', '↔', '(', ')'];
@@ -4434,12 +4677,16 @@ function letter(p) { return p >= 90 ? 'A' : p >= 80 ? 'B' : p >= 70 ? 'C' : p >=
 
 /* ===== Calm study flow: energy picker, resume, game plans, focus mode, break nudges ===== */
 const CH5 = ['seq', 'ind'];
+const NOW = ['indir'];
+const RECENT = NOW.concat(CH5);
+const QUIZ3 = new Date(2026, 9, 29);
+function quizDays() { const t = new Date(); t.setHours(0, 0, 0, 0); return Math.round((QUIZ3 - t) / 86400000); }
 const HWHUB = [['sets', '1.2 #13', 'A × (B × C), (A × B) × C and A × B × C'], ['graphs', '1.4 #1', 'Drawing → V, E and the edge table'], ['graphs', '1.4 #3', 'Edge table → drawing'], ['graphs', '1.4 #5', 'Same graph, two drawings'], ['graphs', '1.4 #8', 'Incident, adjacent, loops, parallel, degree']];
 const backBtn = () => '<button type="button" class="back" data-home="1">← Today</button>';
 const pctOf = st => Math.round(solvedCount(st) / st.items.length * 100);
 function nextFocus() {
-  const ch5 = STATIONS.filter(s => CH5.includes(s.id));
-  return ch5.find(s => pctOf(s) < 80) || STATIONS.slice().sort((a, b) => pctOf(a) - pctOf(b))[0];
+  const recent = RECENT.map(stById).filter(Boolean);
+  return recent.find(s => pctOf(s) < 80) || STATIONS.slice().sort((a, b) => pctOf(a) - pctOf(b))[0];
 }
 function resumeInfo() {
   const L = S.last; const st = L && stById(L.id); if (!st) return null;
@@ -4461,11 +4708,12 @@ function hwTarget(id, tag) { const st = stById(id); const all = st.items.filter(
 function renderRail() {
   const r = S.route; const ol = $('#rail ol');
   const item = (key, num, name, sub, p, cur) => '<li><button type="button" data-go="' + key + '" aria-current="' + cur + '"><span class="vx" style="--p:' + p + '"><span>' + num + '</span></span><span class="nm">' + name + (sub ? '<small>' + sub + '</small>' : '') + '</span></button></li>';
-  const stItem = st => item('st:' + st.id, st.num.replace('4.1–4.2', '4.1'), st.short, '§' + st.num, pctOf(st), r.v === 'st' && r.id === st.id);
+  const stItem = st => item('st:' + st.id, st.num.split('–')[0], st.short, '§' + st.num, pctOf(st), r.v === 'st' && r.id === st.id);
   const head = t => '<li class="grp">' + t + '</li>';
   ol.innerHTML = item('home', '◎', 'Today', 'pick your energy', 0, r.v === 'home') +
-    head('Now') + STATIONS.filter(s => CH5.includes(s.id)).map(stItem).join('') +
-    head('Exam 1 sections') + STATIONS.filter(s => !CH5.includes(s.id)).map(stItem).join('') +
+    head(quizDays() >= 0 ? 'Now · Quiz 3' : 'Now') + NOW.map(stById).map(stItem).join('') +
+    head('Chapter 5') + CH5.map(stById).map(stItem).join('') +
+    head('Exam 1 sections') + STATIONS.filter(s => !RECENT.includes(s.id)).map(stItem).join('') +
     head('Exam tools') + item('plans', '✓', 'Game plans', 'how to get points', 0, r.v === 'plans') +
     item('run', '★', 'Mock exam', S.runBest != null ? 'best ' + S.runBest + '%' : 'graded', S.runBest || 0, r.v === 'run') +
     item('cram', '7', 'Likely 7', 'exam 1 crunch set', Math.round(Object.values((S.cram && S.cram.mark) || {}).filter(v => v === 'got').length / 7 * 100), r.v === 'cram') +
@@ -4507,19 +4755,22 @@ function viewHome(main) {
   const tile = (k, name, mins, txt) => '<button type="button" class="etile" data-energy="' + k + '"><span class="ebat ' + k + '" aria-hidden="true"><i></i></span><span class="etxt"><b>' + name + '</b><span class="emin">' + mins + '</span><span class="edesc">' + txt + '</span></span></button>';
   const cheer = ['One small step at a time!', 'Tiny wins count.', 'A B is totally doable.', 'Water first, then one card.', 'You showed up. That’s the hard part.', 'Just one section today is enough.'];
   main.innerHTML = '<section class="today">' + MASCOT + '<span class="eyebrow">' + new Date().toLocaleDateString('en-US', { weekday: 'long', month: 'short', day: 'numeric' }) + '</span><h1>' + hello + '</h1><p>You don’t have to do everything today. Pick how much energy you have, and do just that.</p><p class="bubble" aria-hidden="true">' + cheer[Math.floor(Math.random() * cheer.length)] + '</p></section>' +
+    quizCard() +
     '<div class="energy">' +
       tile('low', 'Low battery', '≈ 10 min', '5 quick questions from things you’ve already started. No proofs.') +
       tile('mid', 'Some energy', '≈ 25 min', 'The game plan for §' + F.num + ' ' + F.short + ', then 5 problems.') +
       tile('full', 'Full tank', '≈ 60 min', 'A mock exam with a grade at the end.') +
     '</div>' +
     (R ? '<button type="button" class="resume" data-resume="1"><span class="eyebrow">Pick up where you left off</span><b>§' + R.st.num + ' ' + R.st.name + '</b><span class="muted">' + R.where + '</span><span class="go" aria-hidden="true">→</span></button>' : '') +
-    '<h2 class="h-sec">Now · Chapter 5</h2><div class="slist">' + STATIONS.filter(s => CH5.includes(s.id)).map(srow).join('') + '</div>' +
+    '<h2 class="h-sec">' + (quizDays() >= 0 ? 'Now · Quiz 3' : 'Now') + '</h2><div class="slist">' + NOW.map(stById).map(srow).join('') + '</div>' +
+    '<h2 class="h-sec">Chapter 5</h2><div class="slist">' + CH5.map(stById).map(srow).join('') + '</div>' +
     '<h2 class="h-sec">Your professor’s problems</h2><div class="hwlist">' + HWHUB.map(([id, tag, what]) => { const t = hwTarget(id, tag); return '<button type="button" class="hwrow" data-hw="' + id + ':' + t.idx + '"><span class="hwn">' + tag + '</span><span>' + what + '</span><span class="scount">' + (t.total ? t.done + ' / ' + t.total : '') + (t.total && t.done === t.total ? ' ✓' : '') + '</span></button>'; }).join('') + '</div>' +
-    '<details class="older"><summary>Exam 1 sections <span class="muted">§1.2 – §4.5, for review and the final</span></summary><div class="slist">' + STATIONS.filter(s => !CH5.includes(s.id)).map(srow).join('') + '</div></details>' +
+    '<details class="older"><summary>Exam 1 sections <span class="muted">§1.2 – §4.5, for review and the final</span></summary><div class="slist">' + STATIONS.filter(s => !RECENT.includes(s.id)).map(srow).join('') + '</div></details>' +
     '<div class="tools"><span class="eyebrow">Exam tools</span><div class="row"><button type="button" class="btn ghost" data-go="plans">Game plans</button><button type="button" class="btn ghost" data-go="run">Mock exam</button><button type="button" class="btn ghost" data-go="cram">Likely 7</button><button type="button" class="btn ghost" data-go="review">Rapid review</button></div></div>';
   main.addEventListener('click', e => {
-    const b = e.target.closest('[data-st],[data-go],[data-energy],[data-resume],[data-hw]'); if (!b) return;
-    if (b.dataset.st) go({ v: 'st', id: b.dataset.st, tab: (S.lastTab && S.lastTab[b.dataset.st]) || 'learn' });
+    const b = e.target.closest('[data-st],[data-go],[data-energy],[data-resume],[data-hw],[data-q3]'); if (!b) return;
+    if (b.dataset.q3) { if (b.dataset.q3 === 'run') { S.run = buildRun('q3'); save(); go({ v: 'run' }); } else go({ v: 'st', id: 'indir', tab: b.dataset.q3 }); }
+    else if (b.dataset.st) go({ v: 'st', id: b.dataset.st, tab: (S.lastTab && S.lastTab[b.dataset.st]) || 'learn' });
     else if (b.dataset.go) go({ v: b.dataset.go });
     else if (b.dataset.resume) go({ v: 'st', id: R.st.id, tab: R.tab || 'learn' });
     else if (b.dataset.hw) { const [id, i] = b.dataset.hw.split(':'); go({ v: 'st', id, tab: 'practice', item: Math.max(0, +i) }); }
@@ -4527,6 +4778,16 @@ function viewHome(main) {
     else if (b.dataset.energy === 'mid') go({ v: 'st', id: F.id, tab: 'plan' });
     else go({ v: 'run' });
   });
+}
+
+/* ---------- Quiz 3 countdown card ---------- */
+function quizCard() {
+  const d = quizDays(); if (d < 0) return '';
+  const when = d === 0 ? 'Today, end of class' : d === 1 ? 'Tomorrow' : 'In ' + d + ' days';
+  const wd = new Date().getDay(), step = (day, txt) => '<span' + (wd === day ? ' class="now"' : '') + '>' + txt + '</span>';
+  return '<section class="q3card"><div class="q3top"><span class="q3days"><b>' + (d === 0 ? '!' : d) + '</b><small>' + (d === 0 ? 'today' : d === 1 ? 'day' : 'days') + '</small></span><div><span class="eyebrow">Quiz 3 · Thursday 10/29 · ' + when + '</span><h2>§4.7–4.8 Indirect proof</h2><p>12 minutes at the end of class. Two recipes: <b>contradiction</b> and <b>contraposition</b>. You won’t have to write the √2 or primes proofs.</p></div></div>' +
+    '<div class="q3plan">' + step(1, 'Mon · 🔁 contraposition') + step(2, 'Tue · 💥 contradiction') + step(3, 'Wed · fake quiz') + step(4, 'Thu · 10-min look') + '</div>' +
+    '<div class="row"><button type="button" class="btn accent" data-q3="learn">Learn it</button><button type="button" class="btn ghost" data-q3="lab">First-line drill</button><button type="button" class="btn ghost" data-q3="run">Fake quiz · 12 min</button></div></section>';
 }
 
 /* ---------- short sets (low energy, or 5 problems after a game plan) ---------- */
@@ -4579,7 +4840,7 @@ function viewPlans(main) {
 }
 
 /* ---------- mock exams and short sets ---------- */
-const RUN_TITLES = { hw: 'Professor’s picks exam', mix: 'Mixed run', ch5: 'Chapter 5 check', quick: 'Low-battery set', sec: 'Section set' };
+const RUN_TITLES = { hw: 'Professor’s picks exam', mix: 'Mixed run', ch5: 'Chapter 5 check', q3: 'Quiz 3 fake quiz', quick: 'Low-battery set', sec: 'Section set' };
 const runTitle = R => (RUN_TITLES[R.mode] || 'Practice run') + (R.mode === 'sec' && R.sec && stById(R.sec) ? ' · §' + stById(R.sec).num : '');
 function buildRun(mode, keysOverride) {
   const r = rng((Date.now() & 0xffffff) + 7);
@@ -4594,6 +4855,13 @@ function buildRun(mode, keysOverride) {
     return { mode, keys, i: 0, res: {}, t0: Date.now() };
   }
   const eligible = it => !['write', 'gbuild', 'relabel', 'eetable'].includes(it.type);
+  if (mode === 'q3') {
+    const items = stById('indir').items.filter(eligible);
+    const take = (pool, n) => { const out = []; pool = pool.slice(); while (out.length < n && pool.length) out.push(pool.splice(Math.floor(r() * pool.length), 1)[0].key); return out; };
+    const keys = take(items.filter(it => it.type === 'fill' || it.type === 'parsons'), 2).concat(take(items.filter(it => it.type !== 'fill' && it.type !== 'parsons'), 4));
+    for (let i = keys.length - 1; i > 0; i--) { const j = Math.floor(r() * (i + 1)); [keys[i], keys[j]] = [keys[j], keys[i]]; }
+    return { mode, keys, i: 0, res: {}, t0: Date.now() };
+  }
   if (mode === 'ch5') {
     const keys = [];
     CH5.forEach(id => { const pool = stById(id).items.filter(eligible).map(it => it.key); for (let n = 0; n < 4 && pool.length; n++) keys.push(pool.splice(Math.floor(r() * pool.length), 1)[0]); });
@@ -4613,7 +4881,8 @@ function viewRun(main) {
     const feat = (mode, eb, h, p, btn, cls) => '<div class="card feature"><div><span class="eyebrow">' + eb + '</span><h2>' + h + '</h2><p class="muted" style="margin:4px 0 0">' + p + '</p></div><button type="button" class="btn ' + (cls || 'ghost') + '" data-start="' + mode + '">' + btn + '</button></div>';
     main.innerHTML = '<section class="hero"><span class="eyebrow">Exam simulation</span><h1>Mock exam</h1><p>Answer like it’s the real exam. A question counts only if you get it on the <b>first try</b> without opening the solution. Proofs and written answers are checked by Claude or by you.</p></section>' +
       (S.run && S.run.done ? runResults(S.run) : '') +
-      '<div class="stack">' + feat('ch5', 'Now', 'Chapter 5 check', '8 questions from 5.1 and 5.2. About 20 minutes.', 'Start', 'accent') +
+      '<div class="stack">' + feat('q3', 'Thursday', 'Quiz 3 fake quiz', '6 questions from §4.7–4.8, including 2 proofs. About 12 minutes, like the real one.', 'Start', 'accent') +
+      feat('ch5', 'Chapter 5', 'Chapter 5 check', '8 questions from 5.1 and 5.2. About 20 minutes.', 'Start') +
       feat('hw', 'Cumulative', 'Professor’s picks exam', 'One question from every section, 1.2 through 5.2, drawn from versions of the problems you were assigned. Each run picks ones you haven’t seen. <b>' + seen + ' of ' + HW_TOTAL + '</b> seen so far.', 'Start') +
       feat('mix', 'Wider mix', 'Mixed run', '15 questions from all ' + ALL_ITEMS.length + ', at least one per section.', 'Start') + '</div>';
     main.addEventListener('click', e => {

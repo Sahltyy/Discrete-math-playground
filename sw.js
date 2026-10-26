@@ -1,7 +1,7 @@
 /* Discrete Lab service worker: keeps a full copy of the app on the phone.
    The page itself is fetched fresh when there is internet (so updates show up),
    and served from the saved copy when there is not. Everything else is cache-first. */
-const VERSION = 'd753c44233';
+const VERSION = '336ee0d370';
 const CACHE = 'discrete-lab-' + VERSION;
 const ASSETS = [
   "./",
